@@ -1,0 +1,5 @@
+print("hello Namaste!")
+print("Welcome to python!")
+print("Hope you like it")
+num = input("Enter a number")
+print(f"Number entered is {num}")
