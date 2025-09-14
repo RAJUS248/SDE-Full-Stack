@@ -1,12 +1,12 @@
 public class StarPatternPrinting {
 
     public static void main(String[] args) {
-        PrintStarGrid(5);
-        PrintStarTriagleLeft(5);
-        PrintStarTriagleExp(5);
+        
     }
 
-    public static void PrintGrid(int size)
+
+
+    public static void PrintGrid1(int size)
     {
         for (int row=1; row <= size; row++)
         {
@@ -18,7 +18,7 @@ public class StarPatternPrinting {
         }
     }
 
-    public static void PrintStarGrid(int size)
+    public static void PrintStarGrid2(int size)
     {
         for (int row=1; row <= size; row++)
         {
@@ -30,7 +30,7 @@ public class StarPatternPrinting {
         }
     }
 
-    public static void PrintStarTriagleLeft(int size)
+    public static void PrintStarTriagleLeft2(int size)
     {
         for (int row=1; row <= size; row++)
         {
@@ -42,7 +42,7 @@ public class StarPatternPrinting {
         }
     }
 
-    public static void PrintStarTriagleExp(int size)
+    public static void PrintStarTriagleExp2(int size)
     {
         for (int row=size; row >= 1; row--)
         {

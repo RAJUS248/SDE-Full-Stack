@@ -10,6 +10,25 @@
 
 ---
 
+## How to Derive Loop Logic (Recipe)
+
+1. **Sketch small cases** (try `row_max = 3` or `4`).  
+2. Decide **for each row**: how many **spaces** and how many **stars**?  
+3. Turn those counts into **two loops** (spaces first, then stars).  
+4. Keep **outer loop = rows**, **inner loops = counts**.  
+5. Use **`range(1, count + 1)`** to preserve the 1..`<= max` mental model.  
+6. **Build, then print** each line to avoid partial outputs and to simplify debugging.
+
+---
+
+## Debugging Off-by-One & Alignment
+
+- If the shape is **shifted**, re-check **space** counts.  
+- If the shape is **too wide or narrow**, re-check **star** formulas (e.g., `2*row - 1`).  
+- Always test **tiny heights** (`row_max = 1, 2, 3, 4`) to spot mistakes early.
+
+---
+
 ## 1) Example: Print 100 stars sequentially (single line)
 
 ### Goal
@@ -314,24 +333,7 @@ if __name__ == '__main__':
 
 ---
 
-## 8) How to Derive Loop Logic (Recipe)
 
-1. **Sketch small cases** (try `row_max = 3` or `4`).  
-2. Decide **for each row**: how many **spaces** and how many **stars**?  
-3. Turn those counts into **two loops** (spaces first, then stars).  
-4. Keep **outer loop = rows**, **inner loops = counts**.  
-5. Use **`range(1, count + 1)`** to preserve the 1..`<= max` mental model.  
-6. **Build, then print** each line to avoid partial outputs and to simplify debugging.
-
----
-
-## 9) Debugging Off-by-One & Alignment
-
-- If the shape is **shifted**, re-check **space** counts.  
-- If the shape is **too wide or narrow**, re-check **star** formulas (e.g., `2*row - 1`).  
-- Always test **tiny heights** (`row_max = 1, 2, 3, 4`) to spot mistakes early.
-
----
 
 ## 10) Bonus Variations To Practice
 
