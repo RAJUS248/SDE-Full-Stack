@@ -1,0 +1,15 @@
+=========================
+AI Motivational Quote Agent
+Timestamp: 2025-09-16 09:14:26.626161
+=========================
+
+**Motivation:**  
+• Success in MAANG/FAANG is built on disciplined practice.  
+• Mastering DSA and System Design is your gateway to these elite roles.  
+
+**Preparation:**  
+• Dedicate time daily to solving DSA problems on platforms like LeetCode and HackerRank.  
+• Study key system design patterns, practicing with real-world scenarios and applications.  
+• Mock interview frequently to refine your problem-solving and communication skills.  
+• Focus on understanding trade-offs in design decisions to articulate your thoughts clearly.  
+• Keep track of your progress and adjust your study plan based on weaknesses.
