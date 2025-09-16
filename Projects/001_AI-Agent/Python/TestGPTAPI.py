@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 client = OpenAI(
-  api_key="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"
+  api_key="please add your api key here"
 )
 
 response = client.responses.create(
