@@ -33,3 +33,28 @@ Preparation:
 • <optional bullet 4-5>
 """
         return self._chat.complete(prompt, max_tokens=180)
+
+    def generate_modi_quote(self, topic: str | None = None) -> str:
+        """
+        Generate a short, original inspirational quote inspired by public themes often associated
+        with Narendra Modi (leadership, national development, discipline, vision). This should
+        NOT attempt to impersonate or reproduce exact historical quotes. Instead, produce an
+        original, concise quote (1-2 sentences) and append a short attribution line like
+        "— Inspired by Narendra Modi" so the origin is clear.
+
+        `topic` may be used to steer the topic of the quote (e.g., "service", "discipline").
+        """
+
+        steer = f" about {topic}" if topic else ""
+        prompt = f"""
+Write a single, original, inspirational quote{steer} that is concise (1-2 sentences). The quote
+should be uplifting, leadership-focused, and practical. Do NOT impersonate or claim to be an
+actual quote from any real person. After the quote, add a short attribution line exactly like
+this (without additional text):
+
+— Inspired by Narendra Modi
+
+Keep the whole output to no more than 40 words total.
+"""
+
+        return self._chat.complete(prompt, max_tokens=80)

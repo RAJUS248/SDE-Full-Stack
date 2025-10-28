@@ -26,33 +26,49 @@ def main(argv: list[str]) -> int:
         print("ERROR: OPENAI_API_KEY is not set in your environment.", file=sys.stderr)
         return 1
 
+    # Simple CLI: support either the default behavior or a --modi flag
+    # Usage examples:
+    #   python app.py                    -> default student, default focus
+    #   python app.py Alex systems       -> generate advice for Alex
+    #   python app.py --modi              -> generate a short Modi-inspired quote
+    #   python app.py --modi service      -> Modi-inspired quote on 'service'
+
+    # If first arg is --modi, treat optional second arg as topic
+    if len(argv) >= 2 and argv[1] == "--modi":
+        modi_topic = argv[2] if len(argv) >= 3 else None
+        try:
+            client = OpenAIChatClient(model="gpt-4o-mini")
+            agent = AIMotivationalQuoteAgent(client)
+            advice = agent.generate_modi_quote(modi_topic)
+
+            out_path = Path("gpt_output.txt")
+            out_path.write_text(HEADER.format(ts=datetime.now()) + advice + "\n", encoding="utf-8")
+            print(f"SUCCESS: Wrote Modi-inspired quote to {out_path.resolve()}")
+            print(advice)
+            return 0
+
+        except Exception as ex:
+            print(f"ERROR: {ex}", file=sys.stderr)
+            return -1
+
+    # Default behavior: generate motivational advice
     student_name = argv[1] if len(argv) >= 2 else "student"
-    focus_area   = argv[2] if len(argv) >= 3 else "DSA and System Design"
+    focus_area = argv[2] if len(argv) >= 3 else "DSA and System Design"
 
     try:
-        # Step 1 - create a client to talk to GPT or Gen AI 
         client = OpenAIChatClient(model="gpt-4o-mini")
-
-        # Step 2 - Create a specific agent to be invoked (motivation agent)
         agent = AIMotivationalQuoteAgent(client)
-
-        # Step 3 - Invoke the agent to get response 
         advice = agent.generate_advice(student_name, focus_area)
 
-        # Step 4 - If you get the resonse write it to a file 
         out_path = Path("gpt_output.txt")
         out_path.write_text(HEADER.format(ts=datetime.now()) + advice + "\n", encoding="utf-8")
         print(f"SUCCESS: Wrote advice to {out_path.resolve()}")
-
-        # Step 5 - Print the advice on the terminal 
         print(" Response recived is ... ")
         print(advice)
         return 0
 
     except Exception as ex:
-        # If something goes wrong, catch the exeption and show the error
         print(f"ERROR: {ex}", file=sys.stderr)
-        # if there is an error you return a non zero value 
         return -1
 
 

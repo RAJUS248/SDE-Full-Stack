@@ -20,9 +20,6 @@ public class App {
     private static final Logger LOG = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
-        String studentName = (args.length >= 1 && !args[0].isBlank()) ? args[0] : "student";
-        String focusArea   = (args.length >= 2 && !args[1].isBlank()) ? args[1] : "DSA and System Design";
-
         // Guard: API key must exist
         if (System.getenv("OPENAI_API_KEY") == null) {
             LOG.severe("OPENAI_API_KEY is not set.");
@@ -31,14 +28,52 @@ public class App {
         }
 
         OpenAIChatClient client = new OpenAIChatClient(ChatModel.GPT_4_1);
-        AIMotivationalQuoteAgent agent = new AIMotivationalQuoteAgent(client);
+
+        // Modes:
+        // - "motivational" [studentName] [focusArea]
+        // - "modi" [theme] [count]
+        // Backward compatibility: if first arg isn't a known mode, treat as motivational studentName/focusArea.
+        String mode = (args.length >= 1 && !args[0].isBlank()) ? args[0].toLowerCase() : "motivational";
+        boolean legacyMotivational = !("motivational".equals(mode) || "modi".equals(mode));
 
         try {
-            String advice = agent.generateAdvice(studentName, focusArea);
             Path out = Paths.get("gpt_output.txt");
-            writeUtf8(out, advice);
-            LOG.info(() -> "Advice generated and written to: " + out.toAbsolutePath());
-            System.out.println("SUCCESS: Wrote advice to " + out.toAbsolutePath());
+
+            if (legacyMotivational || "motivational".equals(mode)) {
+                String studentName;
+                String focusArea;
+                if (legacyMotivational) {
+                    studentName = (args.length >= 1 && !args[0].isBlank()) ? args[0] : "student";
+                    focusArea   = (args.length >= 2 && !args[1].isBlank()) ? args[1] : "DSA and System Design";
+                } else {
+                    studentName = (args.length >= 2 && !args[1].isBlank()) ? args[1] : "student";
+                    focusArea   = (args.length >= 3 && !args[2].isBlank()) ? args[2] : "DSA and System Design";
+                }
+
+                AIMotivationalQuoteAgent agent = new AIMotivationalQuoteAgent(client);
+                String advice = agent.generateAdvice(studentName, focusArea);
+                writeUtf8(out, advice);
+                LOG.info(() -> "Motivational advice written to: " + out.toAbsolutePath());
+                System.out.println("SUCCESS: Wrote advice to " + out.toAbsolutePath());
+
+            } else if ("modi".equals(mode)) {
+                String theme = (args.length >= 2 && !args[1].isBlank()) ? args[1] : "nation-building and personal responsibility";
+                int count = 3;
+                if (args.length >= 3 && !args[2].isBlank()) {
+                    try {
+                        count = Integer.parseInt(args[2]);
+                    } catch (NumberFormatException ignored) {
+                        count = 3;
+                    }
+                }
+                count = Math.max(1, Math.min(count, 5));
+
+                AIModiQuoteAgent modiAgent = new AIModiQuoteAgent(client);
+                String quotes = modiAgent.generateModiQuotes(theme, count);
+                writeUtf8(out, "AI Modi Quotes", quotes);
+                LOG.info(() -> "Modi quotes written to: " + out.toAbsolutePath());
+                System.out.println("SUCCESS: Wrote Modi quotes to " + out.toAbsolutePath());
+            }
 
         } catch (RuntimeException ex) { // OpenAI / runtime errors
             LOG.log(Level.SEVERE, "AI generation failed: " + ex.getMessage(), ex);
@@ -60,6 +95,29 @@ public class App {
                 =========================
 
                 """.formatted(LocalDateTime.now());
+
+        try {
+            Files.writeString(path, header + content + System.lineSeparator(), StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        } catch (NoSuchFileException nsf) {
+            if (path.getParent() != null) {
+                Files.createDirectories(path.getParent());
+                Files.writeString(path, header + content + System.lineSeparator(), StandardCharsets.UTF_8,
+                        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+            } else {
+                throw nsf;
+            }
+        }
+    }
+
+    private static void writeUtf8(Path path, String title, String content) throws IOException {
+        String header = """
+                =========================
+                %s
+                Timestamp: %s
+                =========================
+
+                """.formatted(title, LocalDateTime.now());
 
         try {
             Files.writeString(path, header + content + System.lineSeparator(), StandardCharsets.UTF_8,

@@ -5,7 +5,7 @@ value_to_index = {}  # Dictionary declaration
 for indexAsValue, valueAsKey in enumerate(arr):
     value_to_index[valueAsKey] = indexAsValue  # Key: element value, Value: index
 
-indexOfNumber = value_to_index.get(100)
+indexOfNumber = value_to_index.get(10)
 
 print(indexOfNumber)
 
