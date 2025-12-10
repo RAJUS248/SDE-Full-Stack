@@ -173,7 +173,7 @@ void insertAtPosition(Node** head, int data, int position)
     if (currentNode == NULL)
     {
         printf("Can't insert at this position, there are less nodes");
-        return;333
+        return;
     }
 
     Node* newNode = CreateNewNode(data);
